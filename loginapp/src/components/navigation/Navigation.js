@@ -3,7 +3,7 @@ import AuthContext from '../../context/auth-context';
 
 import './Navigation.css';
 
-const Navigation = ({ isLoggedIn, onLogout }) => {
+const Navigation = () => {
   const ctx = useContext(AuthContext)
   return (
     <nav className='nav'>
