@@ -1,37 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 
 import Card from '../card/Card';
 import './Login.css';
 import Button from '../button/Button';
 
+const emailReducer = (state, action) => {
+  if (action.type === 'User Input') {
+    return { value: action.val, isValid: action.val.includes('@') }
+  }
+  if (action.type === 'Input Blur') {
+    return { value: state.value, isValid: state.value.includes('@') }
+  }
+  return { value: '', isValid: false }
+}
+
 const Login = ({ onLogin }) => {
-  const [enteredEmail, setEnteredEmail] = useState('');
-  const [emailIsValid, setEmailIsValid] = useState();
   const [enteredPassword, setEnteredPassword] = useState('');
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setFormIsValid(
-        enteredEmail.includes('@') && enteredPassword.trim().length > 6
-      );
-    }, 500);
-    return () => clearTimeout(timeout)
-  }, [enteredEmail, enteredPassword])
+  const [email, dispatchEmail] = useReducer(emailReducer, { value: '', isValid: false })
+
+
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setFormIsValid(
+  //       enteredEmail.includes('@') && enteredPassword.trim().length > 6
+  //     );
+  //   }, 500);
+  //   return () => clearTimeout(timeout)
+  // }, [enteredEmail, enteredPassword])
 
   const emailChangeHandler = (event) => {
-    setEnteredEmail(event.target.value);
+    dispatchEmail({ type: 'User Input', val: event.target.value })
 
   };
 
   const passwordChangeHandler = (event) => {
-    setEnteredPassword(event.target.value);
+    setEnteredPassword(event.target.value)
+    setFormIsValid(
+      email.isValid && enteredPassword.trim().length > 6
+    )
   };
 
   const validateEmailHandler = () => {
-    setEmailIsValid(enteredEmail.includes('@'));
+    dispatchEmail({ type: 'Input Blur' })
   };
 
   const validatePasswordHandler = () => {
@@ -40,21 +54,21 @@ const Login = ({ onLogin }) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    onLogin(enteredEmail, enteredPassword);
+    onLogin(email.value, enteredPassword);
   };
 
   return (
     <Card className='login'>
       <form onSubmit={submitHandler}>
         <div
-          className={`control ${emailIsValid === false ? 'invalid' : ''
+          className={`control ${email.isValid === false ? 'invalid' : ''
             }`}
         >
           <label htmlFor="email">E-Mail</label>
           <input
             type="email"
             id="email"
-            value={enteredEmail}
+            value={email.value}
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
           />
