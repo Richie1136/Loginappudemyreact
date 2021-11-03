@@ -20,7 +20,7 @@ const Navigation = ({ isLoggedIn, onLogout }) => {
         )}
         {ctx.isLoggedIn && (
           <li>
-            <button onClick={onLogout}>Logout</button>
+            <button onClick={ctx.onLogout}>Logout</button>
           </li>
         )}
       </ul>
