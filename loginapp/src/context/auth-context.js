@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const AuthContext = React.createContext({
   isLoggedIn: false,
@@ -9,14 +9,23 @@ const AuthContext = React.createContext({
 export const AuthContextProvider = ({ children }) => {
   const [isLoggedin, setIsLoggedin] = useState(false)
 
+  useEffect(() => {
+    const storedinfo = localStorage.getItem("isLoggedIn")
+    if (storedinfo === 'Logged In') {
+      setIsLoggedin(true)
+    }
+  }, [])
+
   const logoutHandler = () => {
+    localStorage.removeItem("isLoggedIn")
     setIsLoggedin(false)
   }
 
   const loginHandler = () => {
+    localStorage.setItem('isLoggedIn', 'Logged In')
     setIsLoggedin(true)
   }
-  return <AuthContext.Provider value={{ isLoggedin: isLoggedin, onLogout: logoutHandler, onLogin: loginHandler }}>
+  return <AuthContext.Provider value={{ isLoggedIn: isLoggedin, onLogout: logoutHandler, onLogin: loginHandler }}>
     {children}
   </AuthContext.Provider >
 }
