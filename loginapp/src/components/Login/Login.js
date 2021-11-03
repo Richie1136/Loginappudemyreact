@@ -37,11 +37,11 @@ const Login = ({ onLogin }) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setFormIsValid(
-        email.isValid && password.isValid
+        emailIsValid && passwordIsValid
       );
     }, 500);
     return () => clearTimeout(timeout)
-  }, [email, password])
+  }, [emailIsValid, passwordIsValid])
 
   const emailChangeHandler = (event) => {
     dispatchEmail({ type: 'User Input', val: event.target.value })
